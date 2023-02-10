@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
 import { TRANSCODE_QUEUE } from './constants';
 
 @Injectable()
 export class AppService {
+  private readonly logger = new Logger(AppService.name);
+
   constructor(
     @InjectQueue(TRANSCODE_QUEUE) private readonly trancodeQueue: Queue,
   ) {}
@@ -14,6 +16,7 @@ export class AppService {
   }
 
   async transcode() {
+    this.logger.log('Received request ');
     await this.trancodeQueue.add({
       fileName: 'sample-file-or-message',
       time: new Date(),
